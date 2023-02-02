@@ -1,0 +1,31 @@
+.divider {
+    border-bottom: 1px solid white;
+    margin: 10px 0;
+}
+
+.weather-sub-info {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    text-transform: capitalize;
+    color: var(--color3);
+    font-weight: 700;
+}
+
+.weather-sub-city {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.weather-sub-city span {
+    cursor: pointer;
+}
+
+.weather-sub-city span i {
+    display: none;
+}
+
+.WeatherSub:hover .weather-sub-city span i {
+    display: inline;
+}

@@ -12,6 +12,8 @@
 /build
 
 # misc
+/public/weather-icon
+/src/apikeys.tsx
 .DS_Store
 .env.local
 .env.development.local
