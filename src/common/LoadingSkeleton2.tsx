@@ -4,7 +4,7 @@ import "./LoadingSkeleton2.css";
 function LoadingSkeleton2() {
   return (
 
-    <div className="box-container">
+    <div className="loading-box-container" data-testid="loading-box-container">
       <div className="box loading">
         <p></p>
         <div className="info2">

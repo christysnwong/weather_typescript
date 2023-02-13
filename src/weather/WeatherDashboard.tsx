@@ -1,186 +1,35 @@
 import { useState, useEffect } from "react";
 import WeatherMain from "./WeatherMain";
 import WeatherSub from "./WeatherSub";
-import NewLocationForm from "./NewLocationForm";
+import NewLocationForm from "../forms/NewLocationForm";
 import "./WeatherDashboard.css";
 
-import useLocalStorage from "./common/useLocalStorage";
+import useLocalStorage from "../common/useLocalStorage";
 import {
   coord,
-  weatherData,
-  weatherData2,
-  weatherIconBgData,
-  convertProps,
-} from "./interface";
-import { openWeatherApiKey } from "./apikeys";
+  weatherIconBgData
+} from "../common/interface";
+
 
 const WeatherDashboard = () => {
 
   const [tempUnit, setTempUnit] = useLocalStorage<string>("weather-tempUnit");
   const [list, setList] = useLocalStorage<coord[]>("weather-userList");
-
   const [mainLocation, setMainLocation] = useState<coord>({ lat: 0, lon: 0 });
-
-  // API
-
-  const fccApi = `https://fcc-weather-api.glitch.me/api`;
-  const openWeatherApi = `https://api.openweathermap.org/data/3.0`;
 
   // save user's current home location to user list
   const saveHomeLocationToUserList = ({ lat, lon }: coord) => {
-    if (!list) {
-      setList([{ lat, lon }]);
-    } else if (list.length > 1) {
-      setList([{ lat, lon }, ...list.slice(1)]);
-    }
+    setList(list => (list ? [{ lat, lon }, ...list.slice(1)] : [{ lat, lon }]));
   };
 
   // Save user's bookmarked location to user list
   const saveNewLocationToUserList = ({ lat, lon }: coord) => {
-    setList([...list, { lat, lon }]);
+    setList(list => [...list, { lat, lon }]);
   };
 
   // Select units - metric or imperial
   const changeTempUnit = (unit: string): void => {
-    if (unit === "imperial") {
-      setTempUnit("imperial");
-    } else {
-      setTempUnit("metric");
-    }
-  };
-
-  // Convert measurements to metric or imperial for temperature, pressure, visibility, wind speed and degree
-  const convertUnits = ({
-    unit,
-    temp,
-    pressure,
-    vis,
-    windSpeed,
-    windDeg,
-  }: convertProps): number | string => {
-    if (temp && unit === "imperial") {
-      return Math.round((temp * 9) / 5) + 32;
-    } else if (temp && unit === "metric") {
-      return Math.round(temp);
-    }
-
-    if (pressure && unit === "imperial") {
-      return Math.round(pressure * 0.03);
-    } else if (pressure && unit === "metric") {
-      return pressure;
-    }
-
-    if (vis && unit === "imperial") {
-      return Math.round((vis / 1000) * 0.621371);
-    } else if (vis && unit === "metric") {
-      return Math.round(vis / 1000);
-    }
-
-    if (windSpeed && unit === "imperial") {
-      return Math.round(windSpeed * 0.621371);
-    } else if (windSpeed && unit === "metric") {
-      return Math.round(windSpeed);
-    }
-
-    if (windDeg) {
-      if (windDeg === 0) {
-        return "N";
-      } else if (windDeg > 0 && windDeg < 45) {
-        return "NNE";
-      } else if (windDeg === 45) {
-        return "NE";
-      } else if (windDeg > 45 && windDeg < 90) {
-        return "ENE";
-      } else if (windDeg === 90) {
-        return "E";
-      } else if (windDeg > 90 && windDeg < 135) {
-        return "ESE";
-      } else if (windDeg === 135) {
-        return "SE";
-      } else if (windDeg > 135 && windDeg < 180) {
-        return "SSE";
-      } else if (windDeg === 180) {
-        return "S";
-      } else if (windDeg > 180 && windDeg < 225) {
-        return "SSW";
-      } else if (windDeg === 225) {
-        return "SW";
-      } else if (windDeg > 225 && windDeg < 270) {
-        return "WSW";
-      } else if (windDeg === 270) {
-        return "W";
-      } else if (windDeg > 270 && windDeg < 315) {
-        return "WNW";
-      } else if (windDeg === 315) {
-        return "NW";
-      } else if (windDeg > 315 && windDeg < 360) {
-        return "NNW";
-      }
-    }
-
-    return 0;
-  };
-
-  // Make an API call to FreeCodeCamp and fetch basic weather data
-  const getWeatherData = async (
-    lat: number,
-    lon: number
-  ): Promise<weatherData> => {
-
-    let resp: weatherData = await (
-      await fetch(`${fccApi}/current?lat=${lat}&lon=${lon}`)
-    ).json();
-
-    // Verify weather data from FreeCodeCamp's API by checking requested latitude against responded latitude
-    const checkWeatherData = (reqLat: string, respLat: string): boolean => {
-      if (reqLat !== respLat) {
-        return false;
-      } else {
-        return true;
-      }
-    };
-
-    // wait function
-    const wait = (millisec: number) => {
-      return new Promise((resolve) => {
-        setTimeout(resolve, millisec);
-      });
-    };
-
-    while (!checkWeatherData(lat.toFixed(0), resp.coord.lat.toFixed(0))) {
-      // console.log("======== CHECKING =========");
-      // console.log("REQ lat", lat.toFixed(0));
-      // console.log("RESP lat", resp.coord.lat.toFixed(0));
-      // console.log("reload after 1500ms...");
-      // console.log("==========================");
-
-      await wait(1500);
-
-      resp = await (
-        await fetch(`${fccApi}/current?lat=${lat}&lon=${lon}`)
-      ).json();
-    }
-
-    // console.log("RETURN RESP ==>", resp);
-    return resp;
-  };
-
-  // Make an API call to OpenWeatherMap and fetch weather forecasts for the next 7 days
-  const getWeatherData2 = async (
-    lat: number,
-    lon: number
-  ): Promise<weatherData2> => {
-    console.log("===> Fetch more weather data... <====");
-    console.log("lookUP =====>", lat, lon);
-
-    let resp: weatherData2 = await (
-      await fetch(
-        `${openWeatherApi}/onecall?lat=${lat}&lon=${lon}&units=metric&exclude=minutely,hourly&appid=${openWeatherApiKey}`
-      )
-    ).json();
-
-    // console.log("RETURN RESP2 ==>", resp);
-    return resp;
+    setTempUnit(unit === "imperial" ? "imperial" : "metric");
   };
 
   // Get weather icon based on the weather condition from API response 
@@ -232,7 +81,7 @@ const WeatherDashboard = () => {
 
     const weatherBgMap: { [key: number]: string } = {
       2: `200.jpg`,
-      3: `200.jpg`,
+      3: `300.jpg`,
       5: `500.jpg`,
       6: `600.jpg`,
       7: `700.jpg`,
@@ -248,6 +97,7 @@ const WeatherDashboard = () => {
     setList((list) => [...list.filter((location, idx) => idx !== id)]);
   };
 
+  
   useEffect(() => {
 
     if (!list && !mainLocation.lat && navigator.geolocation) {
@@ -268,7 +118,7 @@ const WeatherDashboard = () => {
           lon: position.coords.longitude,
         });
       });
-    } else if (list && !mainLocation.lat && navigator.geolocation) {
+    } else if (list && list.length > 0 && !mainLocation.lat && navigator.geolocation) {
       // check existing user's home location against current geolocation - if different, update home location
 
       navigator.geolocation.getCurrentPosition((position) => {
@@ -305,7 +155,7 @@ const WeatherDashboard = () => {
           className={tempUnit === "metric" ? "curr-unit" : "weather-link"}
           onClick={() => changeTempUnit("metric")}
         >
-          {String.fromCharCode(176)}C
+          °C
         </span>{" "}
         |
         <span
@@ -313,7 +163,7 @@ const WeatherDashboard = () => {
           onClick={() => changeTempUnit("imperial")}
         >
           {" "}
-          {String.fromCharCode(176)}F
+          °F
         </span>
       </span>
 
@@ -330,9 +180,6 @@ const WeatherDashboard = () => {
               lat={mainLocation.lat}
               lon={mainLocation.lon}
               unit={tempUnit === "metric" ? "metric" : "imperial"}
-              convertUnits={convertUnits}
-              getWeatherData={getWeatherData}
-              getWeatherData2={getWeatherData2}
               getWeatherIconUrl={getWeatherIconUrl}
               getWeatherBg={getWeatherBg}
               setMainLocation={setMainLocation}
@@ -371,11 +218,7 @@ const WeatherDashboard = () => {
                     lat={location.lat}
                     lon={location.lon}
                     unit={tempUnit}
-                    convertUnits={convertUnits}
-                    getWeatherData={getWeatherData}
-                    getWeatherData2={getWeatherData2}
                     getWeatherIconUrl={getWeatherIconUrl}
-                    getWeatherBg={getWeatherBg}
                     setMainLocation={setMainLocation}
                     deleteLocation={deleteLocation}
                   />

@@ -1,45 +1,25 @@
-import { weatherCompProps, weatherData } from "./interface";
+import { weatherCompProps, weatherData } from "../common/interface";
 import { useState, useEffect } from "react";
 
-import LoadingSkeleton from "./common/LoadingSkeleton";
+import LoadingSkeleton from "../common/LoadingSkeleton";
+import WeatherApi from "../api/api";
 import "./WeatherSub.css";
+import { convertTemp, units } from "../common/util";
 
 const WeatherSub = ({
   id,
   lat,
   lon,
   unit,
-  convertUnits,
-  getWeatherData,
-  getWeatherData2,
   getWeatherIconUrl,
   setMainLocation,
   deleteLocation,
 }: weatherCompProps) => {
-  let [weatherDataResp, setWeatherDataResp] = useState<weatherData | null>(
+  const [weatherDataResp, setWeatherDataResp] = useState<weatherData | null>(
     null
   );
-  let [weatherIconUrl, setWeatherIconUrl] = useState<string>("");
-  const [infoLoaded, setInfoLoaded] = useState<boolean>(true);
-
-  // get metric or imperial units for temperature
-  const units = (unit: string, category: string) => {
-    let metric: { [key: string]: string } = {
-      temp: `${String.fromCharCode(176)}C`,
-    };
-
-    let imperial: { [key: string]: string } = {
-      temp: `${String.fromCharCode(176)}F`,
-    };
-
-    if (unit === "metric") {
-      return metric[category];
-    }
-
-    if (unit === "imperial") {
-      return imperial[category];
-    }
-  };
+  const [weatherIconUrl, setWeatherIconUrl] = useState<string>("");
+  const [infoLoaded, setInfoLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     if (lat && lon) {
@@ -47,8 +27,8 @@ const WeatherSub = ({
 
         setInfoLoaded(false);
 
-        let resp: weatherData = await getWeatherData(lat, lon);
-        let iconUrl: string = getWeatherIconUrl({
+        const resp: weatherData = await WeatherApi.getWeatherData(lat, lon);
+        const iconUrl: string = getWeatherIconUrl({
           weatherId: resp.weather[0].id,
           currTime: resp.dt,
           sunrise: resp.sys.sunrise,
@@ -66,26 +46,26 @@ const WeatherSub = ({
     }
   }, [lat, lon]);
 
-  if (!infoLoaded) return <LoadingSkeleton />
 
   return (
     <div className="WeatherSub">
-      {weatherDataResp && (
+      {!infoLoaded && <LoadingSkeleton />}
+      {infoLoaded && weatherDataResp && (
         <div>
           
           <div className="weather-sub-city">
-            <span className="weather-link" onClick={() => setMainLocation({ lat: lat, lon: lon })}>
+            {setMainLocation && <span title="set-main-location" className="weather-link" onClick={() => setMainLocation({ lat: lat, lon: lon })}>
                 <i className="fa-solid fa-location-arrow"></i>
                 {" "}{weatherDataResp.name}, {weatherDataResp.sys.country}
-            </span>
-            <span onClick={() => deleteLocation(id)}>
+            </span>}
+            {deleteLocation && <span title="delete-location" onClick={() => deleteLocation(id || 0)}>
               <i className="fa-solid fa-trash"></i>
-            </span>
+            </span>}
             {/* <pre>{lat}, {lon}</pre> */}
           </div>
           <div className="weather-sub-info">
             <span>
-              {convertUnits({ unit: unit, temp: weatherDataResp.main.temp })}
+              {convertTemp(unit, weatherDataResp.main.temp)}
               {units(unit, "temp")}
             </span>
             <img className="imgSub" src={weatherIconUrl} alt="weather-icon" />

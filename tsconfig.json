@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-  ]
+, "src/weather/WeatherDashboard.tsx", "src/weather/WeatherMain.tsx", "src/weather/WeatherSub.tsx"  ]
 }

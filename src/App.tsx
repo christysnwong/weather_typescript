@@ -1,10 +1,9 @@
 import React from 'react';
-import './App.css';
-import WeatherDashboard from './WeatherDashboard';
+import WeatherDashboard from './weather/WeatherDashboard';
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <WeatherDashboard />
     </div>
   );

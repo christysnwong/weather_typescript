@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { newLocationForm, newLocationFormProps, locationData } from "./interface";
+import { newLocationForm, newLocationFormProps, locationData } from "../common/interface";
 
 import "./NewLocationForm.css";
-import { googleApiKey } from "./apikeys";
+import { googleApiKey } from "../api/apikeys";
 
 const NewLocationForm = ({ saveNewLocation } : newLocationFormProps) => {
   const [formData, setFormData] = useState<newLocationForm>({ newLocationName: "" });
@@ -21,7 +21,7 @@ const NewLocationForm = ({ saveNewLocation } : newLocationFormProps) => {
     evt.preventDefault();
 
     try {
-        let resp : locationData = await (
+        const resp : locationData = await (
             await fetch(`${googleApi}/json?address=${formData.newLocationName}&key=${googleApiKey}`)
             ).json();
 

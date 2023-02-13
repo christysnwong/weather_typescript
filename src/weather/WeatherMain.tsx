@@ -1,72 +1,43 @@
-import { weatherCompProps, weatherData, weatherData2 } from "./interface";
+import { weatherCompProps, weatherData, weatherForecastData } from "../common/interface";
 import { useState, useEffect } from "react";
-import LoadingSpinner from "./common/LoadingSpinner";
-import LoadingSkeleton2 from "./common/LoadingSkeleton2";
+import LoadingSpinner from "../common/LoadingSpinner";
+import LoadingSkeleton2 from "../common/LoadingSkeleton2";
+import WeatherApi from "../api/api";
 import { DateTime } from "luxon";
 
+
 import "./WeatherMain.css";
+import { convertPressure, convertTemp, convertVis, convertWindDeg, convertWindSpeed, units } from "../common/util";
 
 const WeatherMain = ({
-  id,
   lat,
   lon,
   unit,
-  convertUnits,
-  getWeatherData,
-  getWeatherData2,
   getWeatherIconUrl,
-  getWeatherBg,
-  setMainLocation,
-  deleteLocation,
+  getWeatherBg
 }: weatherCompProps) => {
-  let [weatherDataResp, setWeatherDataResp] = useState<weatherData | null>(
+  const [weatherDataResp, setWeatherDataResp] = useState<weatherData | null>(
     null
   );
-  let [weatherDataResp2, setWeatherDataResp2] = useState<weatherData2 | null>(
+  const [weatherForecastDataResp, setWeatherForecastDataResp] = useState<weatherForecastData | null>(
     null
   );
-  let [weatherIconUrl, setWeatherIconUrl] = useState<string>("");
-  let [weatherBg, setWeatherBg] = useState<string>("");
+  const [weatherIconUrl, setWeatherIconUrl] = useState<string>("");
+  const [weatherBg, setWeatherBg] = useState<string>("");
   const [infoLoaded, setInfoLoaded] = useState<boolean>(false);
   const [infoLoaded2, setInfoLoaded2] = useState<boolean>(false);
-  const [show7DayDetails, setShow7DayDetails] = useState<boolean>(false);
+  const [showWeatherForecast, setShowWeatherForecast] = useState<boolean>(false);
 
-  // get metric or imperial units for measurements
-  const units = (unit: string, category: string) => {
-    let metric: { [key: string]: string } = {
-      temp: `${String.fromCharCode(176)}C`,
-      pressure: `mbar`,
-      vis: `km`,
-      windSpeed: `m/s`,
-      windDeg: `${String.fromCharCode(176)}`,
-    };
-
-    let imperial: { [key: string]: string } = {
-      temp: `${String.fromCharCode(176)}F`,
-      pressure: `inches`,
-      vis: `miles`,
-      windSpeed: `mph`,
-      windDeg: `${String.fromCharCode(176)}`,
-    };
-
-    if (unit === "metric") {
-      return metric[category];
-    }
-
-    if (unit === "imperial") {
-      return imperial[category];
-    }
-  };
 
   // Fetch weather forecasts for the next 7 days
-  const getWeather2 = async () => {
-    setShow7DayDetails(!show7DayDetails);
+  const getWeatherForecast = async () => {
+    setShowWeatherForecast(!showWeatherForecast);
 
-    if (!weatherDataResp2) {
+    if (!weatherForecastDataResp) {
       try {
-        let resp: weatherData2 = await getWeatherData2(lat, lon);
+        const resp: weatherForecastData = await WeatherApi.getWeatherForecastData(lat, lon);
 
-        setWeatherDataResp2(resp);
+        setWeatherForecastDataResp(resp);
         setInfoLoaded2(true);
       } catch (e) {
         console.error(e);
@@ -75,24 +46,24 @@ const WeatherMain = ({
   };
 
   useEffect(() => {
-    if (lat && lon) {
+    if (lat && lon && getWeatherBg) {
       // Fetch basic weather data, weather icon and background for current weather
       const getWeather = async () => {
         setInfoLoaded(false);
         setInfoLoaded2(false);
-        setShow7DayDetails(false);
-        setWeatherDataResp2(null);
+        setShowWeatherForecast(false);
+        setWeatherForecastDataResp(null);
 
         try {
-          let resp: weatherData = await getWeatherData(lat, lon);
-          let iconUrl: string = getWeatherIconUrl({
+          const resp: weatherData = await WeatherApi.getWeatherData(lat, lon);
+          const iconUrl: string = getWeatherIconUrl({
             weatherId: resp.weather[0].id,
             currTime: resp.dt,
             sunrise: resp.sys.sunrise,
             sunset: resp.sys.sunset,
             animated: true,
           });
-          let bg: string = getWeatherBg({
+          const bg: string = getWeatherBg({
             weatherId: resp.weather[0].id,
             currTime: resp.dt,
             sunrise: resp.sys.sunrise,
@@ -115,11 +86,12 @@ const WeatherMain = ({
 
   }, [lat, lon]);
 
-  if (!infoLoaded) return <LoadingSpinner />;
+  // if (!infoLoaded) return <LoadingSpinner />;
 
   return (
     <div className="WeatherMain">
-      {weatherDataResp && (
+      {!infoLoaded && <LoadingSpinner />}
+      {infoLoaded && weatherDataResp && (
         <>
           <div
             className="weather-main-info"
@@ -137,10 +109,7 @@ const WeatherMain = ({
               </span>
               <div className="info-container">
                 <span className="curr-temp">
-                  {convertUnits({
-                    unit: unit,
-                    temp: weatherDataResp.main.temp,
-                  })}
+                  {convertTemp(unit, weatherDataResp.main.temp)}
                   {units(unit, "temp")}
                 </span>
 
@@ -158,46 +127,31 @@ const WeatherMain = ({
           <div className="weather-details">
             <span className="bold">Low Temp: </span>
             <span>
-              {convertUnits({
-                unit: unit,
-                temp: weatherDataResp.main.temp_min,
-              })}
+              {convertTemp(unit, weatherDataResp.main.temp_min)}
               {units(unit, "temp")}
             </span>
             <span className="bold">High Temp: </span>
             <span>
-              {convertUnits({
-                unit: unit,
-                temp: weatherDataResp.main.temp_max,
-              })}
+              {convertTemp(unit, weatherDataResp.main.temp_max)}
               {units(unit, "temp")}
             </span>
             <span className="bold">Pressure: </span>
             <span>
-              {convertUnits({
-                unit: unit,
-                pressure: weatherDataResp.main.pressure,
-              })}{" "}
+              {convertPressure(unit, weatherDataResp.main.pressure)}{" "}
               {units(unit, "pressure")}
             </span>
             <span className="bold">Humidity: </span>
             <span>{weatherDataResp.main.humidity}%</span>
             <span className="bold">Visibility: </span>
             <span>
-              {convertUnits({ unit: unit, vis: weatherDataResp.visibility })}{" "}
+              {convertVis(unit, weatherDataResp.visibility)}{" "}
               {units(unit, "vis")}
             </span>
             <span className="bold">Wind Speed: </span>
             <span>
-              {convertUnits({
-                unit: unit,
-                windSpeed: weatherDataResp.wind.speed,
-              })}{" "}
+              {convertWindSpeed(unit, weatherDataResp.wind.speed)}{" "}
               {units(unit, "windSpeed")}{" "}
-              {convertUnits({
-                unit: unit,
-                windDeg: weatherDataResp.wind.deg,
-              })}
+              {convertWindDeg(unit, weatherDataResp.wind.deg)}
             </span>
             <span className="bold">Sunrise: </span>
             <span>
@@ -218,10 +172,10 @@ const WeatherMain = ({
           </div>
 
           <div>
-            <button className="btn" onClick={() => getWeather2()}>
+            <button className="btn" onClick={() => getWeatherForecast()}>
               <i
                 className={
-                  show7DayDetails
+                  showWeatherForecast
                     ? "fa-solid fa-angles-up"
                     : "fa-solid fa-angles-down"
                 }
@@ -230,11 +184,11 @@ const WeatherMain = ({
             </button>
           </div>
 
-          {show7DayDetails && !infoLoaded2 && <LoadingSkeleton2 />}
+          {showWeatherForecast && !infoLoaded2 && <LoadingSkeleton2 />}
 
-          {show7DayDetails && weatherDataResp2 && (
+          {showWeatherForecast && weatherForecastDataResp && (
             <div className="weather-details-more">
-              {weatherDataResp2.daily.map((dayWeather, idx) => {
+              {weatherForecastDataResp.daily.map((dayWeather, idx) => {
                 return (
                   <div className="weather-info2" key={idx}>
                     <p className="bold">
@@ -251,20 +205,14 @@ const WeatherMain = ({
                     <span className="color3">
                       Low:{" "}
                       <span className="bold">
-                        {convertUnits({
-                          unit: unit,
-                          temp: dayWeather.temp.min,
-                        })}
+                        {convertTemp(unit, dayWeather.temp.min)}
                         {units(unit, "temp")}
                       </span>
                     </span>
                     <span className="color3">
                       High:{" "}
                       <span className="bold">
-                        {convertUnits({
-                          unit: unit,
-                          temp: dayWeather.temp.max,
-                        })}
+                        {convertTemp(unit, dayWeather.temp.max)}
                         {units(unit, "temp")}
                       </span>
                     </span>
@@ -278,7 +226,7 @@ const WeatherMain = ({
                           sunset: dayWeather.sunset,
                           animated: false,
                         })}
-                        alt="weather-icon"
+                        alt="weather-icon-sub"
                       />
                     </span>
                     <span className="color3 bold">

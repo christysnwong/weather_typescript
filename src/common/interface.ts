@@ -40,7 +40,7 @@ export interface sys {
   sunset: number;
 }
 
-export interface weatherData2 {
+export interface weatherForecastData {
   lat: number;
   lon: number;
   timezone: string;
@@ -108,6 +108,11 @@ export interface results {
   }
 }
 
+// export interface convertUnitsProps {
+//   unit: string;
+//   [key: string] : number;
+// }
+
 export interface convertProps {
   unit: string;
   temp?: number;
@@ -118,17 +123,14 @@ export interface convertProps {
 }
 
 export interface weatherCompProps {
-  id: number;
+  id?: number;
   lat: number;
   lon: number;
   unit: string;
-  convertUnits: (units : convertProps) => number | string;
-  getWeatherData: (lat: number, lon: number) => Promise<weatherData>;
-  getWeatherData2: (lat: number, lon: number) => Promise<weatherData2>;
   getWeatherIconUrl: (weatherIconData : weatherIconBgData) => string;
-  getWeatherBg: (weatherBg : weatherIconBgData) => string;
-  setMainLocation: (location: coord) => void;
-  deleteLocation: (id: number) => void;
+  getWeatherBg?: (weatherBg : weatherIconBgData) => string;
+  setMainLocation?: (location: coord) => void;
+  deleteLocation?: (id: number) => void;
 }
 
 export interface newLocationFormProps {
