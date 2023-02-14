@@ -64,6 +64,15 @@ html {
   height: auto;
 }
 
+.unit {
+  font-size: 18px;
+}
+
+.unit-separator {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .curr-unit {
   color: var(--color3);
   font-weight: 700;

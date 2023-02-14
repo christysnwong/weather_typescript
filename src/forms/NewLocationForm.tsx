@@ -31,7 +31,7 @@ const NewLocationForm = ({ saveNewLocation } : newLocationFormProps) => {
 
 
   return (
-    <div className="NewLocationForm container-main">
+    <div className="NewLocationForm">
       
         <form onSubmit={handleSubmit}>
             <div className="container-form">
@@ -43,7 +43,7 @@ const NewLocationForm = ({ saveNewLocation } : newLocationFormProps) => {
                 onChange={handleChange}
                 placeholder="Bookmark a City"
               />
-              <button type="submit" className="btn">Submit</button>
+              <button type="submit" className="btn"><i className="fa-solid fa-plus"></i></button>
             </div>
         </form>
 

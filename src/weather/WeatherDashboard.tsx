@@ -150,26 +150,25 @@ const WeatherDashboard = () => {
     <div className="WeatherDashboard container-page">
       <h1 className="title-weather-app">Weather Dashb<i className="fa-solid fa-cloud-sun"></i>ard</h1>
 
-      <span>
+      <span className="unit">
         <span
           className={tempUnit === "metric" ? "curr-unit" : "weather-link"}
           onClick={() => changeTempUnit("metric")}
         >
           °C
-        </span>{" "}
-        |
+        </span>
+        
+        <span className="unit-separator">|</span>
+        
         <span
           className={tempUnit === "imperial" ? "curr-unit" : "weather-link"}
           onClick={() => changeTempUnit("imperial")}
         >
-          {" "}
           °F
         </span>
       </span>
 
-      {list && list.length < 5 && (
-        <NewLocationForm saveNewLocation={saveNewLocationToUserList} />
-      )}
+      
 
       <div className="container-weather">
         <div className="container-main">
@@ -224,7 +223,16 @@ const WeatherDashboard = () => {
                   />
                 </div>
               );
-            })}
+            })
+          }
+
+          <div className="divider"></div>
+          
+          {list && list.length < 5 && (
+            <NewLocationForm saveNewLocation={saveNewLocationToUserList} />
+          )}
+
+
         </div>
       </div>
     </div>
