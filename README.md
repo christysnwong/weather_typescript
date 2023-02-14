@@ -3,20 +3,20 @@
 
 #### Introduction
 
-Weather Dashboard is a single page app that allows users to get the latest weather information in order to plan their days. Users can view today's weather as well as weather forecasts for the next 7 days at their current location. Furthermore, users can bookmark other cities and find out weather information at other locations.
+The Weather Dashboard is a single-page app that helps users plan their days by providing the latest weather information. It displays today's weather and weather forecasts for the next 7 days, based on the user's current location. Additionally, users can save other cities as bookmarks and view their weather information.
 
-Users need to give permission to the browser to access their current location.
+Users must give their browser permission to access their current location.
 
-The tech stack of this project consists of React and Typescript.
+The technology stack used in this project includes React and TypeScript.
 
 #### Functionality
 
-* Users can view the weather information at their current location in metric unit or imperial unit
-* Users can add cities to their bookmarks and view cities' weather information
-* Users can delete cities from their bookmarks
-* Users can view more details by clicking on any bookmarked cities
-* Users can view weather forecasts of their current city or bookmarked cities
-* Users' unit preferences and bookmarks are saved locally on their browser
+* View weather information at their current location in either metric or imperial units.
+* Add cities to their bookmarks and view their weather information.
+* Delete cities from their bookmarks.
+* View more details by clicking on any of their bookmarked cities.
+* View weather forecasts for their current city or any of their bookmarked cities.
+* Their unit preferences and bookmarks are saved locally on their browser.
 
 #### Set Up
 
