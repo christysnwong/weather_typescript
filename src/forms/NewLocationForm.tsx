@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { newLocationForm, newLocationFormProps, locationData } from "../common/interface";
+import WeatherApi from "../api/api";
 
 import "./NewLocationForm.css";
-import { googleApiKey } from "../api/apikeys";
 
 const NewLocationForm = ({ saveNewLocation } : newLocationFormProps) => {
   const [formData, setFormData] = useState<newLocationForm>({ newLocationName: "" });
-
-  const googleApi = `https://maps.googleapis.com/maps/api/geocode`;
 
   const handleChange = (evt : any) => {
     const { name, value } = evt.target;
@@ -21,9 +19,7 @@ const NewLocationForm = ({ saveNewLocation } : newLocationFormProps) => {
     evt.preventDefault();
 
     try {
-        const resp : locationData = await (
-            await fetch(`${googleApi}/json?address=${formData.newLocationName}&key=${googleApiKey}`)
-            ).json();
+        const resp : locationData = await WeatherApi.getLatLon(formData.newLocationName);
 
         saveNewLocation({lat: resp.results[0].geometry.location.lat, lon: resp.results[0].geometry.location.lng });
 

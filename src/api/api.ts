@@ -1,11 +1,28 @@
-import { weatherData, weatherForecastData } from "../common/interface";
-import { openWeatherApiKey } from "./apikeys";
+import {
+  weatherData,
+  weatherForecastData,
+  locationData,
+} from "../common/interface";
+// import { googleApiKey, openWeatherApiKey } from "./apikeys";
 
 const fccApi = `https://fcc-weather-api.glitch.me/api`;
 const openWeatherApi = `https://api.openweathermap.org/data/3.0`;
+const openWeatherApiKey = process.env.REACT_APP_OPEN_WEATHER_API_KEY;
+const googleApi = `https://maps.googleapis.com/maps/api/geocode`;
+const googleApiKey = process.env.REACT_APP_GOOGLE_API_KEY;
 
-// Make an API call to FreeCodeCamp and fetch basic weather data
+// Make an API call to fetch lat/lon and weather data
 class WeatherApi {
+
+  static async getLatLon(newLocationName: string): Promise<locationData> {
+    const resp: locationData = await (
+      await fetch(
+        `${googleApi}/json?address=${newLocationName}&key=${googleApiKey}`
+      )
+    ).json();
+
+    return resp;
+  }
 
   static async getWeatherData(lat: number, lon: number): Promise<weatherData> {
     let resp: weatherData = await (
@@ -46,7 +63,10 @@ class WeatherApi {
     return resp;
   }
 
-  static async getWeatherForecastData(lat: number, lon: number): Promise<weatherForecastData> {
+  static async getWeatherForecastData(
+    lat: number,
+    lon: number
+  ): Promise<weatherForecastData> {
     console.log("===> Fetch more weather data... <====");
     console.log("lookUP =====>", lat, lon);
 
@@ -59,8 +79,6 @@ class WeatherApi {
     // console.log("RETURN RESP2 ==>", resp);
     return resp;
   }
-
-
 }
 
 export default WeatherApi;

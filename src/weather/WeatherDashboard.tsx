@@ -191,7 +191,7 @@ const WeatherDashboard = () => {
         <div className="container-sub">
           <h2 className="title">
             Bookmarks
-            <span> (max 4)</span>
+            <span> (max 5)</span>
           </h2>
           <div className="divider"></div>
           <div

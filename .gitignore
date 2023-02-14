@@ -14,7 +14,12 @@
 # misc
 /public/weather-icon
 /src/api/apikeys.ts
+/src/api/api-old.ts
+/src/api/api-trial.ts
+/netlify
+
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
