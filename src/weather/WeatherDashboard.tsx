@@ -80,13 +80,13 @@ const WeatherDashboard = () => {
       currTime >= sunrise && currTime < sunset ? "d" : "n";
 
     const weatherBgMap: { [key: number]: string } = {
-      2: `200.jpg`,
-      3: `300.jpg`,
-      5: `500.jpg`,
-      6: `600.jpg`,
-      7: `700.jpg`,
-      800: `800${dayOrNight}.jpg`,
-      801: `801.jpg`,
+      2: `weather-bg/200.jpg`,
+      3: `weather-bg/300.jpg`,
+      5: `weather-bg/500.jpg`,
+      6: `weather-bg/600.jpg`,
+      7: `weather-bg/700.jpg`,
+      800: `weather-bg/800${dayOrNight}.jpg`,
+      801: `weather-bg/801.jpg`,
     };
 
     return weatherBgMap[category];
