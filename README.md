@@ -1,7 +1,7 @@
 # Weather Dashboard
 [Check it out here!](https://cw-weather.netlify.app/)
 
-#### Introduction
+## Introduction
 
 The Weather Dashboard is a single-page app that helps users plan their days by providing the latest weather information. It displays today's weather and weather forecasts for the next 7 days, based on the user's current location. Additionally, users can save other cities as bookmarks and view their weather information.
 
@@ -9,7 +9,7 @@ Users must give their browser permission to access their current location.
 
 The technology stack used in this project includes React and TypeScript.
 
-#### Functionality
+## Functionality
 
 * View weather information at their current location in either metric or imperial units.
 * Add cities to their bookmarks and view their weather information.
@@ -18,7 +18,7 @@ The technology stack used in this project includes React and TypeScript.
 * View weather forecasts for their current city or any of their bookmarked cities.
 * Their unit preferences and bookmarks are saved locally on their browser.
 
-#### Set Up
+## Set Up
 
 1. Make a new directory for this project
 2. On your terminal, go to the directory that you just created
@@ -37,7 +37,7 @@ The technology stack used in this project includes React and TypeScript.
     
     `$ npm start`
 
-#### Screenshots
+## Screenshots
 
 Homepage
 !["Homepage"](public/screenshots/homepage.JPG)
