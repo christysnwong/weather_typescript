@@ -47,16 +47,16 @@ const WeatherDashboard = () => {
     const svgCondition = animated === true ? "animated" : "static";
 
     const weatherIconMapUrl: { [key: number]: string } = {
-      2: `weather-icons2/${svgCondition}/200${dayOrNight}.svg`,
-      3: `weather-icons2/${svgCondition}/300${dayOrNight}.svg`,
-      5: `weather-icons2/${svgCondition}/500${dayOrNight}.svg`,
-      6: `weather-icons2/${svgCondition}/600${dayOrNight}.svg`,
-      7: `weather-icons2/${svgCondition}/700${dayOrNight}.png`,
-      800: `weather-icons2/${svgCondition}/800${dayOrNight}.svg`,
-      801: `weather-icons2/${svgCondition}/801${dayOrNight}.svg`,
-      802: `weather-icons2/${svgCondition}/802${dayOrNight}.svg`,
-      803: `weather-icons2/${svgCondition}/803${dayOrNight}.svg`,
-      804: `weather-icons2/${svgCondition}/804${dayOrNight}.svg`,
+      2: `weather-icons2/${svgCondition}/200${dayOrNight}.svg`, // thunderstorm
+      3: `weather-icons2/${svgCondition}/300${dayOrNight}.svg`, // drizzle
+      5: `weather-icons2/${svgCondition}/500${dayOrNight}.svg`, // rain
+      6: `weather-icons2/${svgCondition}/600${dayOrNight}.svg`, // snow
+      7: `weather-icons2/${svgCondition}/700${dayOrNight}.png`, // atmosphere
+      800: `weather-icons2/${svgCondition}/800${dayOrNight}.svg`, // clear
+      801: `weather-icons2/${svgCondition}/801${dayOrNight}.svg`, // few clouds
+      802: `weather-icons2/${svgCondition}/802${dayOrNight}.svg`, // scatter clouds
+      803: `weather-icons2/${svgCondition}/803${dayOrNight}.svg`, // broken clouds
+      804: `weather-icons2/${svgCondition}/804${dayOrNight}.svg`, // overcast clouds
     };
 
     return weatherIconMapUrl[category];
@@ -80,13 +80,13 @@ const WeatherDashboard = () => {
       currTime >= sunrise && currTime < sunset ? "d" : "n";
 
     const weatherBgMap: { [key: number]: string } = {
-      2: `weather-bg/200.jpg`,
-      3: `weather-bg/300.jpg`,
-      5: `weather-bg/500.jpg`,
-      6: `weather-bg/600.jpg`,
-      7: `weather-bg/700.jpg`,
-      800: `weather-bg/800${dayOrNight}.jpg`,
-      801: `weather-bg/801.jpg`,
+      2: `weather-bg/200.jpg`, // thunderstorm
+      3: `weather-bg/300.jpg`, // drizzle
+      5: `weather-bg/500.jpg`, // rain
+      6: `weather-bg/600.jpg`, // snow
+      7: `weather-bg/700.jpg`,// atmosphere
+      800: `weather-bg/800${dayOrNight}.jpg`, // clear
+      801: `weather-bg/801.jpg`, // cloudy
     };
 
     return weatherBgMap[category];
@@ -167,7 +167,7 @@ const WeatherDashboard = () => {
         </span>
       </span>
 
-      {list && list.length < 6 && (
+      {list && list.length < 5 && (
         <NewLocationForm saveNewLocation={saveNewLocationToUserList} />
       )}
 
@@ -191,7 +191,7 @@ const WeatherDashboard = () => {
         <div className="container-sub">
           <h2 className="title">
             Bookmarks
-            <span> (max 5)</span>
+            <span> (max 4)</span>
           </h2>
           <div className="divider"></div>
           <div
