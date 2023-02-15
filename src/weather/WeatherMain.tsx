@@ -105,7 +105,7 @@ const WeatherMain = ({
               <span>
                 {DateTime.utc()
                   .plus({ hours: weatherDataResp.timezone / 60 / 60 })
-                  .toFormat("LLLL dd, h:mm a")}
+                  .toFormat("ccc, LLLL dd, h:mm a")}
               </span>
               <div className="info-container">
                 <span className="curr-temp">
@@ -198,7 +198,7 @@ const WeatherMain = ({
                               hours: weatherDataResp.timezone / 60 / 60,
                               days: idx,
                             })
-                            .toFormat("LLL dd")
+                            .toFormat("ccc, LLL dd")
                         : "Today"}
                     </p>
 

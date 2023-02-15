@@ -72,8 +72,8 @@ const WeatherDashboard = () => {
     const category: number =
       weatherId < 800
         ? Math.floor(weatherId / 100)
-        : weatherId > 801
-        ? 801
+        : weatherId > 802
+        ? 802
         : weatherId;
     
     const dayOrNight: string =
@@ -86,7 +86,8 @@ const WeatherDashboard = () => {
       6: `weather-bg/600.jpg`, // snow
       7: `weather-bg/700.jpg`,// atmosphere
       800: `weather-bg/800${dayOrNight}.jpg`, // clear
-      801: `weather-bg/801.jpg`, // cloudy
+      801: `weather-bg/801.jpg`, // few clouds
+      802: `weather-bg/802.jpg`, // cloudy
     };
 
     return weatherBgMap[category];
