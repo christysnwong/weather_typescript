@@ -174,7 +174,7 @@ const WeatherDashboard = () => {
       <div className="container-weather">
         <div className="container-main">
           <h2 className="title">Current Weather</h2>
-          {mainLocation.lat && (
+          {!!mainLocation.lat && (
             <WeatherMain
               id={0}
               lat={mainLocation.lat}
